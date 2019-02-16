@@ -11,11 +11,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="GPM  - Um gerenciador pedagogico meritocratico" />
-    <title>GPM -  Cadastro de Questões</title>
-   
+    <meta name="description" content="TesteFullStack" />
+    <title>TesteFullStack</title>
+    <link rel="stylesheet" href="estilos/app.css" />
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="estilos/styles.css" />
+    
     
 
 </head>
@@ -65,8 +66,33 @@
 </textarea></p>
 
 
+<p>
+               
 
-                </div>
+<table class="tg">
+  <tr id="novaTeg">
+  <th class="tg-ow70"> <label for="id_pergunta">Tags:</label>  </th>    
+  <?php 
+     $tags = DB::getConn()->prepare('select * from tags;');
+     $tags->execute();
+    while($tag = $tags->fetch(PDO::FETCH_ASSOC)){
+      
+  ?>  
+  <th class="tg-ow70"> <input type="checkbox" name="tag[]" class="get_value" value="<?php echo $tag['id']?>"/> <?php echo $tag['tag']?> </th>
+    
+ <?php } ?>
+ 
+ 
+ <th class="tg-ow70"> <input type="checkbox" name="j[]" class="get_value" value="0" id="id_tag" checked=""/> Outra </th>
+  </tr>
+
+</table>
+			 
+
+            </p>
+			
+	
+
                 </div>
                 <div class="pure-controls">
                     <button type="submit" class="pure-button pure-button-primary">Cadastrar</button>
@@ -76,12 +102,42 @@
 </div>
 </div>
 
+<div class="modal" tabindex="-1" role="dialog" id="dlgtag">
+    <div class="modal-dialog" role="document"> 
+        <div class="modal-content">
+            <form class="form-horizontal" id="formtag">
+                <div class="modal-header">
+                    <h5 class="modal-title">Informe a Nova Tag</h5>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" id="id" class="form-control">
+                    <div class="form-group">
+                        <label for="nomeTag" class="control-label">Tag:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="tag" placeholder="Tag">
+                        </div>
+                    </div>
+
+                   
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="cancel" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     <div class="footer">
         TesteFullStackPleno
     </div>
 </div>
-		<script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
+        <script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
+        
 		<script src="js/jquery-3.2.1.min.js"> </script>
 
         <script src="ckeditor/ckeditor.js"></script>
@@ -90,7 +146,10 @@
 $( document ).ready( function() {
 	$( 'textarea#id_Body' ).ckeditor();
 } );
-
+$(function(){
+    $('#id_tag').prop('checked', false);
+    })
+    
 
 	
 </script>
@@ -99,27 +158,19 @@ $( document ).ready( function() {
 		<script type="text/javascript">
 
    
-	$(function(){
-			$('#id_Turma').change(function(){
-				if( $(this).val() ) {
-					$('#idDiciplina').hide();
-					$('.carregando').show();
-					$.getJSON('includes/disciplina.php?search=',{id: $(this).val(), ajax: 'true'}, function(j){
-						var options = '<option value="">Escolha Disciplina</option>';	
-						for (var i = 0; i < j.length; i++) {
-							options += '<option value="' + j[i].idDisciplina + '">' + j[i].Nome + '</option>';
-						}	
-						$('#idDiciplina').html(options).show();
-						$('.carregando').hide();
-					});
-				} else {
-					$('#idDiciplina').html('<option value="">– Escolha a Disciplina –</option>');
-				}
+$(function(){
+			$('#id_tag').change(function(){
+			novoProduto();
+             //   console.log("aqui");
 			});
 		});
-
 	
+        function montarLinha(p) {
+        var linha = '<th class="tg-ow70" > <input type="checkbox" name="tag[]" class="get_value" value="'+p[0]["id"]+'" checked />'+p[0]["tag"]+'</th>';
+        return linha;
+    }
 
+    
 
 	$(function(){
 			$('#idDiciplina').change(function(){
@@ -139,10 +190,35 @@ $( document ).ready( function() {
 				}
 			});
 		});
-	
-	
+    
+        function criarProduto() {
+        t = { 
+            tag: $("#tag").val(), 
+        };
+        $.post("includes/tags.php", t, function(data) {
+            $('#dlgtag').hide();
+            tag = JSON.parse(data);  
+            linha = montarLinha(tag);
+            $('#novaTeg').append(linha);
+            $('id_tag').prop('', false);
+            $('#id_tag').prop('checked', false);
+        });
+    }    
 
 
+        function novoProduto() {
+        $('#id').val('');
+        $('#tag').val(''); 
+        $('#dlgtag').show();
+    }
+
+    $("#formtag").submit( function(event){ 
+        event.preventDefault(); 
+       
+            criarProduto();
+            
+            
+    });
 
 		</script>
 		</body>
