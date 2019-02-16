@@ -90,8 +90,20 @@
 			 
 
             </p>
-			
-	
+           
+            <p><label for="id_nivel">Selecione o Autor:</label> 
+		<select id="id_autor" name="autor"> 
+        <?php 
+               $autor = DB::getConn()->prepare('select * from authors;');
+               $autor->execute();      
+               while($a = $autor->fetch(PDO::FETCH_ASSOC)){
+                   ?>
+                  <option value="<?php echo $a['id']?>"> <?php echo $a['nome'] ?> </option>
+              
+              <?php   } ?>
+                  <option value="0"> Outro </option>  
+            		</select>
+</p>	
 
                 </div>
                 <div class="pure-controls">
