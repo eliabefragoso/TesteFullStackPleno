@@ -1,8 +1,7 @@
 <?php 
           include('seguranca.php');
-              
-          //echo "aqui";
-         // echo  '<a href="?sair=true">sair</a>';
+         //biblioteca responsavel pela segurança da pagina!      
+         
 ?>
 
 <!doctype html>
@@ -42,7 +41,7 @@
             </ul>
         </div>
     </div>
-    <div class="content">
+    <div class="content"> <!-- DIV que organiza o topo da pagina -->
             
            
             
@@ -63,7 +62,7 @@
    <p><label for="id_titulo">Imagem:</label> <input id="id_titulo" name="titulo" type="file" /></p>          
                     
 <p><label for="id_pergunta">Body:</label> <textarea cols="40" id="id_Body" name="body" rows="10">
-</textarea></p>
+</textarea></p> <!-- Corpo do postagem-->
 
 
 <p>
@@ -86,7 +85,7 @@
  <th class="tg-ow70"> <input type="checkbox" name="j[]" class="get_value" value="0" id="id_tag" checked=""/> Outra </th>
   </tr>
 
-</table>
+</table> <!-- Tabela que organiza as tags! -->
 			 
 
             </p>
@@ -102,7 +101,7 @@
               
               <?php   } ?>
                   <option value="0"> Outro </option>  
-            		</select>
+            		</select> <!-- Selecte de autores do postagens! -->
 </p>	
 
                 </div>
@@ -110,9 +109,9 @@
                     <button type="submit" class="pure-button pure-button-primary">Cadastrar</button>
                 </div>
             </fieldset>
-                </form>
+                </form> <!-- formulario de cadastro de postes! -->
 </div>
-</div>
+</div> <!-- div que organiza o formulario dos Postes do Blog-->
 
 <div class="modal" tabindex="-1" role="dialog" id="dlgtag">
     <div class="modal-dialog" role="document"> 
@@ -130,10 +129,6 @@
                             <input type="text" class="form-control" id="tag" placeholder="Tag">
                         </div>
                     </div>
-
-                   
-                    
-                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Salvar</button>
@@ -142,11 +137,41 @@
             </form>
         </div>
     </div>
-</div>
+</div> <!-- div que organiza o formulario de cadastro de tags -->
+
+
+
+<div class="modal" tabindex="-1" role="dialog" id="dlgautor">
+    <div class="modal-dialog" role="document"> 
+        <div class="modal-content">
+            <form class="form-horizontal" id="formautor">
+                <div class="modal-header">
+                    <h5 class="modal-title">Informe o Nome do Autor:</h5>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" id="id" class="form-control">
+                    <div class="form-group">
+                        <label for="nomeAutor" class="control-label">Nome:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="autor" placeholder="Autor">
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="cancel" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> <!-- div que organiza o formulario de cadastro de autores -->
+
 
     <div class="footer">
         TesteFullStackPleno
-    </div>
+    </div> <!-- div que organiza o radapé do site -->
 </div>
         <script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
         
@@ -171,39 +196,29 @@ $(function(){
 
    
 $(function(){
-			$('#id_tag').change(function(){
-			novoProduto();
-             //   console.log("aqui");
+			$('#id_autor').change(function(){
+                //console.log("deu nop");
+                if($("#id_autor").val()==0)
+                    novoAutor();
 			});
 		});
-	
+    
+        $(function(){
+			$('#id_tag').change(function(){
+			novaTag();
+             
+			});
+		});        
+
         function montarLinha(p) {
         var linha = '<th class="tg-ow70" > <input type="checkbox" name="tag[]" class="get_value" value="'+p[0]["id"]+'" checked />'+p[0]["tag"]+'</th>';
         return linha;
     }
-
-    
-
-	$(function(){
-			$('#idDiciplina').change(function(){
-				if( $(this).val() ) {
-					$('#id_assunto_idassunto').hide();
-					$('.carregandoA').show();
-					$.getJSON('includes/assunto.php?search=',{idAssunto: $(this).val(), ajax: 'true'}, function(j){
-						var options = '<option value="">Escolha O Assunto</option>';	
-						for (var i = 0; i < j.length; i++) {
-							options += '<option value="' + j[i].idAssunto + '">' + j[i].nome_assunto + '</option>';
-						}	
-						$('#id_assunto_idassunto').html(options).show();
-						$('.carregandoA').hide();
-					});
-				} else {
-					$('#id_assunto_idassunto').html('<option value="">– Escolha O Assunto  –</option>');
-				}
-			});
-		});
-    
-        function criarProduto() {
+       function montarAutor(a){
+           var linha = '<option value="'+a[0]["id"]+'" selected>'+a[0]["nome"]+'</option>';
+           return linha;
+       }
+        function criarTag() {
         t = { 
             tag: $("#tag").val(), 
         };
@@ -218,18 +233,42 @@ $(function(){
     }    
 
 
-        function novoProduto() {
+    function criarAutor() {
+        autor = { 
+            nome: $("#autor").val(), 
+        };
+        $.post("includes/autor.php", autor, function(data) {
+            $('#dlgautor').hide();
+            a = JSON.parse(data);  
+            linha = montarAutor(a);
+            $('#id_autor').append(linha);
+        });
+    }    
+
+        function novaTag() {
         $('#id').val('');
         $('#tag').val(''); 
         $('#dlgtag').show();
     }
 
+    function novoAutor() {
+        $('#id').val('');
+        $('#autor').val(''); 
+        $('#dlgautor').show();
+    }
+
     $("#formtag").submit( function(event){ 
         event.preventDefault(); 
        
-            criarProduto();
-            
-            
+            criarTag();
+                     
+    });
+
+    $("#formautor").submit( function(event){ 
+        event.preventDefault(); 
+       
+            criarAutor();
+                     
     });
 
 		</script>
