@@ -23,7 +23,7 @@
 <div class="content">
     <div class="header">
         <div class="pure-menu pure-menu-open pure-menu-fixed pure-menu-horizontal">
-            <a class="pure-menu-heading" href="/">GPM</a>
+            <a class="pure-menu-heading" href="/">TesteFullStackPleno</a>
             <ul>
                 <li class="pure-menu-selected"><a href="/">Início</a></li>
                 <li><a href="Turma.php">Turmas</a></li>
@@ -49,7 +49,7 @@
 <div class="pure-g-r content-ribbon">
         <div class="pure-u-1">
     
-<form action="includes/salvarPoste.php" class="pure-form pure-form-aligned" method="post">
+<form  enctype="multipart/form-data" action="actions/salvarPost.php" class="pure-form pure-form-aligned" method="post">
  
                     <input type='hidden' name='csrfmiddlewaretoken' value='I6liCbU6lImkvFwQ8FpcYLF5nHFa20S5' />
   <fieldset>
@@ -59,7 +59,7 @@
 
   <p><label for="id_titulo">Slug:</label> <input id="id_slgu" name="slug" type="text" /></p>    
 
-   <p><label for="id_titulo">Imagem:</label> <input id="id_titulo" name="titulo" type="file" /></p>          
+   <p><label for="id_titulo">Imagem:</label> <input id="id_titulo" name="imagem" type="file" /></p>          
                     
 <p><label for="id_pergunta">Body:</label> <textarea cols="40" id="id_Body" name="body" rows="10">
 </textarea></p> <!-- Corpo do postagem-->
