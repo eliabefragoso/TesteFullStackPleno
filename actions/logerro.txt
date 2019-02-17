@@ -1,2 +1,3 @@
 erro: CAUGHT EXCEPTION no arquivo: /var/www/html/TesteFullStackPleno/actions/salvarPost.php ( linha 118 ) :: IP(::1) data:16/02/19 12:45:32
 erro: CAUGHT EXCEPTION no arquivo: /var/www/html/TesteFullStackPleno/actions/salvarPost.php ( linha 117 ) :: IP(::1) data:16/02/19 12:46:38
+erro: CAUGHT EXCEPTION no arquivo: /var/www/html/TesteFullStackPleno/actions/salvarPost.php ( linha 70 ) :: IP(::1) data:16/02/19 19:16:41

@@ -64,7 +64,18 @@ if(isset($_FILES['imagem']['name']) && $_FILES["imagem"]["error"] == 0)
             $inserir = DB::getConn()->prepare("INSERT INTO `posts` SET `title`=?, `slug`=?, `body`=?, `image`=?, `published`=?, `authors_id`=?");
 							
 			if($inserir->execute(array($titulo,$slug,$body,$url,$published,$autor))){
-								header('Location: ../');
+								
+		//associar a postagem as suas tagas 
+				$select = DB::getConn()->prepare("SELECT `id` FROM `posts` WHERE `title`=? AND `slug`=? AND `body`=? AND `authors_id`=?");
+				$select->execute(array($titulo,$slug,$body,$autor));	
+				while($poste = $select->fetch(PDO::FETCH_ASSOC)){
+					foreach($tag as $t){
+						$posts_tags = DB::getConn()->prepare("INSERT INTO `posts_tags` SET `posts_id`=?, `tags_id`=?");
+						$posts_tags->execute(array($poste['id'],$t));
+					}
+
+				} header('Location: ../');			
+				                
 							}
 						}
 					}
@@ -116,6 +127,17 @@ else
 	$inserir = DB::getConn()->prepare("INSERT INTO `posts` SET `title`=?, `slug`=?, `body`=?, `image`=?, `published`=?, `authors_id`=?");
 					
 	if($inserir->execute(array($titulo,$slug,$body,$img,$published,$autor))){
+					//associar a postagem as suas tagas 
+				$select = DB::getConn()->prepare("SELECT `id` FROM `posts` WHERE `title`=? AND `slug`=? AND `body`=? AND `authors_id`=?");
+				$select->execute(array($titulo,$slug,$body,$autor));	
+				while($poste = $select->fetch(PDO::FETCH_ASSOC)){
+					foreach($tag as $t){
+						$posts_tags = DB::getConn()->prepare("INSERT INTO `posts_tags` SET `posts_id`=?, `tags_id`=?");
+						$posts_tags->execute(array($poste['id'],$t));
+					}
+
+				}	
+		
 						header('Location: ../');
 					}
 				}
