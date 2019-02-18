@@ -15,7 +15,7 @@
     <div class="pure-menu pure-menu-open pure-menu-fixed pure-menu-horizontal">
         <a class="pure-menu-heading" href="editar.php">TesteFullStackPleno</a>
         <ul>
-        <li> <form action="buscar.php" method="post" > 
+        <li> <form action="buscarLogado.php" method="post" > 
             <input id="id_palavra" name="palavra" type="text" size="50"/> 
             
                     <button type="submit" class="pure-button pure-button-primary">Buscar</button>
@@ -29,7 +29,7 @@
                
                 
                 
-               <li><a href="editar.php">Posts</a></li>
+               <li><a href="editar.php">Postes</a></li>
                
                <li><a href="cadastroPoste.php">Postar Texto</a></li>
            
@@ -52,9 +52,9 @@
                     <h2 class="splash-subhead">
                         O TesteFullStackPleno visa simplificar a postagem de textos na internet, provendo ferramentas objetivas e de fácil uso par o compartilhamento de texto.
                     </h2>
-                    <h3> Cadastre-se e venha fazer parte da comunicade  </h3>
+                    <h3> Poste seus textos favoritos aqui e os compartilhe na rede mundial de computadores  </h3>
                     <p>
-                        <a href="cadastro.php" class="pure-button primary-button">Cadastra-se</a>
+                        <a href="cadastroPoste.php" class="pure-button primary-button">Postar Texto</a>
                     </p>
                 </div>
             </div>

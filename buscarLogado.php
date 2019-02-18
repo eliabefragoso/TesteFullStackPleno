@@ -1,5 +1,5 @@
 
-<?php include('class/DB.class.php'); ?>
+<?php include('seguranca.php'); ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -15,22 +15,19 @@
     <div class="pure-menu pure-menu-open pure-menu-fixed pure-menu-horizontal">
         <a class="pure-menu-heading" href="index.php">TesteFullStackPleno</a>
         <ul>
-        <li> <form action="buscar.php" method="post" > 
+        <li> <form action="" method="post" > 
             <input id="id_palavra" name="palavra" type="text" size="50"/> 
             
                     <button type="submit" class="pure-button pure-button-primary">Buscar</button>
             
             </form> </li>
             
-            <li class="pure-menu-selected"><a href="index.php">Início</a></li>
+            <li class="pure-menu-selected"><a href="editar.php">Início</a></li>
+            <li class="pure-menu-selected"><a href="editar.php">Postes</a></li>
+
             <li><a href="cadastroPoste.php">Postar Texto</a></li>
-            <li><a href="editar.php">Postes</a></li>
             
-            <?php if(isset($_GET['logado']) AND $_GET['logado']=='1') {
-                   echo '<li><a href="cadastroPoste.php?sair=true">Sair</a></li>';  
-            }else{
-                     echo ' <li><a href="cadastroPoste.php">Entrar</a></li>';
-            } ?>
+            <li><a href="?sair=true">sair</a></li>
            
         </ul>
     </div>
@@ -46,9 +43,9 @@
                     <h2 class="splash-subhead">
                         O TesteFullStackPleno visa simplificar a postagem de textos na internet, provendo ferramentas objetivas e de fácil uso par o compartilhamento de texto.
                     </h2>
-                    <h3> Cadastre-se e venha fazer parte da comunicade  </h3>
+                    <h3> Poste seus textos favoritos e os compartilhe na rede mundila de computadores  </h3>
                     <p>
-                        <a href="cadastro.php" class="pure-button primary-button">Cadastra-se</a>
+                        <a href="cadastroPoste.php" class="pure-button primary-button">Postar Texto</a>
                     </p>
                 </div>
             </div>
@@ -56,7 +53,8 @@
     </div>
 
  <?php 
-            $poste = DB::getConn()->prepare("SELECT p.id, p.title, p.slug, p.body, p.image, a.nome FROM posts p INNER JOIN authors a ON p.authors_id=a.id;");
+            $palavra = $_POST['palavra'];
+            $poste = DB::getConn()->prepare("SELECT p.id, p.title, p.slug, p.body, p.image, a.nome FROM posts p INNER JOIN authors a ON p.authors_id=a.id WHERE p.title LIKE '%".$palavra."%' OR p.slug LIKE '%".$palavra."%' OR p.body LIKE '%".$palavra."%' OR a.nome LIKE '%".$palavra."%';");
              $poste->execute();
              while($p = $poste->fetch(PDO::FETCH_ASSOC)){ 
                            
@@ -79,6 +77,7 @@
                  }
                  echo '</h6>';
                 ?> 
+                 <h6> <a type="submit" class="button-warning pure-button" href="editaposte.php?id=<?php echo $p['id'] ?>">Editar</a> / <a type="submit" class="button-error pure-button" href="apagar.php?id=<?php echo $p['id'] ?>">Apagar</a>   </h6>
             </div>
         </div>
         <?php if($p['image'] != '0'){ ?>
@@ -91,7 +90,44 @@
         </div>
         <?php }?>
     </div>
-    <?php }?>
+    <?php }?> 
+    <?php 
+         $busca_tag = DB::getConn()->prepare("Select p.id, p.title, p.slug, p.body, p.image, a.nome from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id inner join authors a ON p.authors_id=a.id where t.tag=?;");
+         $busca_tag->execute(array($palavra));
+         while($busca_post = $busca_tag->fetch(PDO::FETCH_ASSOC)){
+              
+         
+    ?>
+    <div class="pure-g-r content-ribbon">
+    <?php if($busca_post['image'] != '0'){ ?>
+        <div class="pure-u-1-3">
+            <div class="l-box">
+                <img src="<?php echo $busca_post['image']?>"
+                     alt="<?php echo $busca_post['title']?>">
+            </div>
+        </div>
+        <?php }?>
+        <div class="pure-u-2-3">
+            <div class="l-box">
+                <h4 class="content-subhead"><?php echo $busca_post['title']?></h4>
+                <h3><?php echo $busca_post['slug']?></h3>
+                <p>
+                <?php echo $busca_post['body']?>
+                </p>
+                <h5> Autor: <?php echo $busca_post['nome']?> </h5>
+                <h6>Tags: <?php 
+                 $Tags = DB::getConn()->prepare("Select t.id, t.tag from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id where p.id=?;");
+                 $Tags->execute(array($busca_post['id']));
+                 while($Tag = $Tags->fetch(PDO::FETCH_ASSOC)){
+                     echo ' <a class="pure-menu-heading" href="tag.php?id='.$Tag['id'].'">'.$Tag['tag'].'</a> / '; 
+                 }
+                 echo '</h6>';
+                ?> 
+            </div>
+        </div>
+    </div> 
+    <?php }?>  
+
    
     <div class="footer">
     TesteFullStackPleno - Uma simples plataforma de postagem de texto

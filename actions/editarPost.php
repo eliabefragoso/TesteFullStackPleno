@@ -79,7 +79,7 @@ if(isset($_FILES['imagem']['name']) && $_FILES["imagem"]["error"] == 0)
 						$posts_tags->execute(array($poste['id'],$t));
 					}
 
-				} header('Location: ../TesteFullStackPleno/editar.php');			
+				} header('Location: ../editar.php');			
 			}                
 					}catch(PDOException $e){
 						
@@ -143,7 +143,7 @@ else
 				$posts_tags->execute(array($poste['id'],$t));
 			}
 
-		} header('Location: ../TesteFullStackPleno/editar.php');			
+		} header('Location: ../editar.php');			
 	}                
 			}catch(PDOException $e){
 				
