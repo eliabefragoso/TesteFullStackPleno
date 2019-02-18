@@ -47,7 +47,7 @@
                     </h2>
                     <h3> Cadastre-se e venha fazer parte da comunicade  </h3>
                     <p>
-                        <a href="#" class="pure-button primary-button">Saiba mais</a>
+                        <a href="cadastro.php" class="pure-button primary-button">Cadastra-se</a>
                     </p>
                 </div>
             </div>
@@ -71,10 +71,10 @@
                 </p>
                 <h5> Autor: <?php echo $p['nome']?> </h5>
                 <h6>Tags: <?php 
-                 $tags = DB::getConn()->prepare("Select t.tag from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id where p.id=?;");
+                 $tags = DB::getConn()->prepare("Select t.id, t.tag from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id where p.id=?;");
                  $tags->execute(array($p['id']));
                  while($tag = $tags->fetch(PDO::FETCH_ASSOC)){
-                     echo ' <a class="pure-menu-heading" href="">'.$tag['tag'].'</a> / '; 
+                    echo ' <a class="pure-menu-heading" href="tag.php?id='.$tag['id'].'">'.$tag['tag'].'</a> / '; 
                  }
                  echo '</h6>';
                 ?> 
@@ -91,61 +91,11 @@
         <?php }?>
     </div>
     <?php }?>
-    <div class="pure-g-r content-ribbon">
-        <div class="pure-u-1-3">
-            <div class="l-box">
-                <img src="http://placehold.it/400x250"
-                     alt="Fórum de Dúvidas">
-            </div>
-        </div>
-        <div class="pure-u-2-3">
-            <div class="l-box">
-                <h4 class="content-subhead">Fórum de Dúvidas</h4>
-                <h3>Interaja com seus Alunos</h3>
-                <p>
-                    No Simple MOOC você pode ter seu próprio sistema de fórum para que seus alunos possam interagir com você e com os outros alunos
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="pure-g-r content-ribbon">
-        <div class="pure-u-2-3">
-            <div class="l-box">
-                <h4 class="content-subhead">Exercícios</h4>
-                <h3>Crie exercícios para avaliar seus alunos</h3>
-                <p>
-                    Você pode criar exercícios para que os alunos possam ser avaliados e todo o controle de notas e resolução dos exercícios é controlado pela plataforma, facilitando sua vida
-                </p>
-            </div>
-        </div>
-        <div class="pure-u-1-3">
-            <div class="l-box">
-                <img src="http://placehold.it/400x250"
-                     alt="Exercícios">
-            </div>
-        </div>
-    </div>
-    <div class="pure-g-r content-ribbon">
-        <div class="pure-u-1-3">
-            <div class="l-box">
-                <img src="http://placehold.it/400x250"
-                     alt="Mural de Avisos">
-            </div>
-        </div>
-        <div class="pure-u-2-3">
-            <div class="l-box">
-                <h4 class="content-subhead">Mural de Avisos</h4>
-                <h3>Envie anúncios diretamente para os alunos</h3>
-                <p>
-                    Organize os avisos do seu curso de forma fácil e simples.
-                </p>
-            </div>
-        </div>
-    </div>
+   
     <div class="footer">
     TesteFullStackPleno - Uma simples plataforma de postagem de texto
     </div>
 </div>
 <script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
 </body>
-</html>s
+</html>

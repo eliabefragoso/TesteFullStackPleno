@@ -47,7 +47,7 @@
                     </h2>
                     <h3> Cadastre-se e venha fazer parte da comunicade  </h3>
                     <p>
-                        <a href="#" class="pure-button primary-button">Saiba mais</a>
+                        <a href="cadastro.php" class="pure-button primary-button">Cadastre-se</a>
                     </p>
                 </div>
             </div>
@@ -55,9 +55,10 @@
     </div>
 
  <?php 
-            $palavra = $_POST['palavra'];
-            $poste = DB::getConn()->prepare("SELECT p.id, p.title, p.slug, p.body, p.image, a.nome FROM posts p INNER JOIN authors a ON p.authors_id=a.id WHERE p.title LIKE '%".$palavra."%' OR p.slug LIKE '%".$palavra."%' OR p.body LIKE '%".$palavra."%';");
-             $poste->execute();
+            if(isset($_GET['id'])){
+            $tag_id = $_GET['id'] ;
+            $poste = DB::getConn()->prepare("Select p.id, p.title, p.slug, p.body, p.image, a.nome from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id inner join authors a ON p.authors_id=a.id where t.id=?;");
+             $poste->execute(array($tag_id));
              while($p = $poste->fetch(PDO::FETCH_ASSOC)){ 
                            
              
@@ -72,10 +73,10 @@
                 </p>
                 <h5> Autor: <?php echo $p['nome']?> </h5>
                 <h6>Tags: <?php 
-                 $tags = DB::getConn()->prepare("Select t.tag from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id where p.id=?;");
+                 $tags = DB::getConn()->prepare("Select t.id, t.tag from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id where p.id=?;");
                  $tags->execute(array($p['id']));
                  while($tag = $tags->fetch(PDO::FETCH_ASSOC)){
-                     echo ' <a class="pure-menu-heading" href="">'.$tag['tag'].'</a> / '; 
+                    echo ' <a class="pure-menu-heading" href="tag.php?id='.$tag['id'].'">'.$tag['tag'].'</a> / '; 
                  }
                  echo '</h6>';
                 ?> 
@@ -91,42 +92,8 @@
         </div>
         <?php }?>
     </div>
-    <?php }?> 
-    <?php 
-         $busca_tag = DB::getConn()->prepare("Select p.id, p.title, p.slug, p.body, p.image, a.nome from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id inner join authors a ON p.authors_id=a.id where t.tag=?;");
-         $busca_tag->execute(array($palavra));
-         while($busca_post = $busca_tag->fetch(PDO::FETCH_ASSOC)){
-              
-         
-    ?>
-    <div class="pure-g-r content-ribbon">
-        <div class="pure-u-1-3">
-            <div class="l-box">
-                <img src="<?php echo $busca_post['image']?>"
-                     alt="<?php echo $busca_post['title']?>">
-            </div>
-        </div>
-        <div class="pure-u-2-3">
-            <div class="l-box">
-                <h4 class="content-subhead"><?php echo $busca_post['title']?></h4>
-                <h3><?php echo $busca_post['slug']?></h3>
-                <p>
-                <?php echo $busca_post['body']?>
-                </p>
-                <h5> Autor: <?php echo $busca_post['nome']?> </h5>
-                <h6>Tags: <?php 
-                 $Tags = DB::getConn()->prepare("Select t.id, t.tag from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id where p.id=?;");
-                 $Tags->execute(array($busca_post['id']));
-                 while($Tag = $Tags->fetch(PDO::FETCH_ASSOC)){
-                     echo ' <a class="pure-menu-heading" href="tag.php?id='.$Tag['id'].'">'.$Tag['tag'].'</a> / '; 
-                 }
-                 echo '</h6>';
-                ?> 
-            </div>
-        </div>
-    </div> 
-    <?php }?>  
-
+    <?php } }?> 
+   
    
     <div class="footer">
     TesteFullStackPleno - Uma simples plataforma de postagem de texto
@@ -134,4 +101,4 @@
 </div>
 <script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
 </body>
-</html>s
+</html>

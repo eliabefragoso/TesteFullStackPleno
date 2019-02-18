@@ -47,7 +47,7 @@
                     </h2>
                     <h3> Cadastre-se e venha fazer parte da comunicade  </h3>
                     <p>
-                        <a href="#" class="pure-button primary-button">Saiba mais</a>
+                        <a href="cadastro.php" class="pure-button primary-button">Cadastra-se</a>
                     </p>
                 </div>
             </div>
@@ -56,7 +56,7 @@
 
  <?php 
             $palavra = $_POST['palavra'];
-            $poste = DB::getConn()->prepare("SELECT p.id, p.title, p.slug, p.body, p.image, a.nome FROM posts p INNER JOIN authors a ON p.authors_id=a.id WHERE p.title LIKE '%".$palavra."%' OR p.slug LIKE '%".$palavra."%' OR p.body LIKE '%".$palavra."%';");
+            $poste = DB::getConn()->prepare("SELECT p.id, p.title, p.slug, p.body, p.image, a.nome FROM posts p INNER JOIN authors a ON p.authors_id=a.id WHERE p.title LIKE '%".$palavra."%' OR p.slug LIKE '%".$palavra."%' OR p.body LIKE '%".$palavra."%' OR a.nome LIKE '%".$palavra."%';");
              $poste->execute();
              while($p = $poste->fetch(PDO::FETCH_ASSOC)){ 
                            
@@ -72,10 +72,10 @@
                 </p>
                 <h5> Autor: <?php echo $p['nome']?> </h5>
                 <h6>Tags: <?php 
-                 $tags = DB::getConn()->prepare("Select t.tag from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id where p.id=?;");
+                 $tags = DB::getConn()->prepare("Select t.id, t.tag from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id where p.id=?;");
                  $tags->execute(array($p['id']));
                  while($tag = $tags->fetch(PDO::FETCH_ASSOC)){
-                     echo ' <a class="pure-menu-heading" href="">'.$tag['tag'].'</a> / '; 
+                    echo ' <a class="pure-menu-heading" href="tag.php?id='.$tag['id'].'">'.$tag['tag'].'</a> / '; 
                  }
                  echo '</h6>';
                 ?> 
@@ -100,12 +100,14 @@
          
     ?>
     <div class="pure-g-r content-ribbon">
+    <?php if($busca_post['image'] != '0'){ ?>
         <div class="pure-u-1-3">
             <div class="l-box">
                 <img src="<?php echo $busca_post['image']?>"
                      alt="<?php echo $busca_post['title']?>">
             </div>
         </div>
+        <?php }?>
         <div class="pure-u-2-3">
             <div class="l-box">
                 <h4 class="content-subhead"><?php echo $busca_post['title']?></h4>
@@ -134,4 +136,4 @@
 </div>
 <script src="http://yui.yahooapis.com/3.12.0/build/yui/yui-min.js"></script>
 </body>
-</html>s
+</html>
