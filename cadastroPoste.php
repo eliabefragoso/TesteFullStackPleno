@@ -23,16 +23,18 @@
 <div class="content">
     <div class="header">
         <div class="pure-menu pure-menu-open pure-menu-fixed pure-menu-horizontal">
-            <a class="pure-menu-heading" href="/">TesteFullStackPleno</a>
+            <a class="pure-menu-heading" href="editar.php">TesteFullStackPleno</a>
             <ul>
-                <li class="pure-menu-selected"><a href="/">Início</a></li>
-                <li><a href="Turma.php">Turmas</a></li>
-                
-
+            <li> <form action="buscar.php" method="post" > 
+            <input id="id_palavra" name="palavra" type="text" size="50"/> 
+            
+                    <button type="submit" class="pure-button pure-button-primary">Buscar</button>
+            
+            </form> </li>
+                <li class="pure-menu-selected"><a href="editar.php">Início</a></li>
                
                 
-                
-                <li><a href="#">Posts</a></li>
+                <li><a href="editar.php">Posts</a></li>
                 
             
             

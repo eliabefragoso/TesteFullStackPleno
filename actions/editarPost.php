@@ -52,22 +52,27 @@ if(isset($_FILES['imagem']['name']) && $_FILES["imagem"]["error"] == 0)
 				
 					try{
 													
-					$verificar = DB::getConn()->prepare("SELECT `id` FROM `posts` WHERE `body`=?");
-					if($verificar->execute(array($body))){
-						if($verificar->rowCount()>=1){
-							echo 'Este Texto já esta cadastrado em nosso sistema';
-						
-						}else{
+					
 							$published = 1;
 							 $url = 'uploads/' . $novoNome;
 
-            $inserir = DB::getConn()->prepare("INSERT INTO `posts` SET `title`=?, `slug`=?, `body`=?, `image`=?, `published`=?, `authors_id`=?");
+			$apagar_foto = DB::getConn()->prepare("SELECT `image` FROM `posts` WHERE `id`=?");
+			$apagar_foto->execute(array($id)); 
+			while($apagar = $apagar_foto->fetch(PDO::FETCH_ASSOC)){
+				if($apagar['image']!='0')
+				//Apagar foto anterior do poste, não queremos encher o servidor de arquivos não necessarios! 
+				unlink("../".$apagar['image']);
+			}	 
+
+            $inserir = DB::getConn()->prepare("UPDATE `posts` SET `title`=?, `slug`=?, `body`=?, `image`=?, `published`=?, `authors_id`=? WHERE `id`=?");
 							
-			if($inserir->execute(array($titulo,$slug,$body,$url,$published,$autor))){
+			if($inserir->execute(array($titulo,$slug,$body,$url,$published,$autor,$id))){
 								
 		//associar a postagem as suas tagas 
 				$select = DB::getConn()->prepare("SELECT `id` FROM `posts` WHERE `title`=? AND `slug`=? AND `body`=? AND `authors_id`=?");
-				$select->execute(array($titulo,$slug,$body,$autor));	
+				$select->execute(array($titulo,$slug,$body,$autor));
+				$delete = DB::getConn()->prepare("DELETE FROM `posts_tags` WHERE `posts_id`=?");
+				$delete->execute(array($id));	
 				while($poste = $select->fetch(PDO::FETCH_ASSOC)){
 					foreach($tag as $t){
 						$posts_tags = DB::getConn()->prepare("INSERT INTO `posts_tags` SET `posts_id`=?, `tags_id`=?");
@@ -75,10 +80,7 @@ if(isset($_FILES['imagem']['name']) && $_FILES["imagem"]["error"] == 0)
 					}
 
 				} header('Location: ../TesteFullStackPleno/editar.php');			
-				                
-							}
-						}
-					}
+			}                
 					}catch(PDOException $e){
 						
 						logErros($e);
@@ -112,36 +114,37 @@ else
 		}else{
 			
 		
-			
 			try{
 											
-			$verificar = DB::getConn()->prepare("SELECT `id` FROM `posts` WHERE `body`=?");
-			if($verificar->execute(array($body))){
-				if($verificar->rowCount()>=1){
-					echo 'Este Texto já esta cadastrado em nosso sistema';
-				
-				}else{
+			
 					$published = 1;
-					$img = '0';
+					// $url = 'uploads/' . $novoNome;
+                    $img = 0;   
+	$apagar_foto = DB::getConn()->prepare("SELECT `image` FROM `posts` WHERE `id`=?");
+	$apagar_foto->execute(array($id)); 
+	while($apagar = $apagar_foto->fetch(PDO::FETCH_ASSOC)){
+		if($apagar['image']!='0')
+		//Apagar foto anterior do poste, não queremos encher o servidor de arquivos não necessarios! 
+		unlink("../".$apagar['image']);
+	}	 
 
-	$inserir = DB::getConn()->prepare("INSERT INTO `posts` SET `title`=?, `slug`=?, `body`=?, `image`=?, `published`=?, `authors_id`=?");
+	$inserir = DB::getConn()->prepare("UPDATE `posts` SET `title`=?, `slug`=?, `body`=?, `image`=?, `published`=?, `authors_id`=? WHERE `id`=?");
 					
-	if($inserir->execute(array($titulo,$slug,$body,$img,$published,$autor))){
-					//associar a postagem as suas tagas 
-				$select = DB::getConn()->prepare("SELECT `id` FROM `posts` WHERE `title`=? AND `slug`=? AND `body`=? AND `authors_id`=?");
-				$select->execute(array($titulo,$slug,$body,$autor));	
-				while($poste = $select->fetch(PDO::FETCH_ASSOC)){
-					foreach($tag as $t){
-						$posts_tags = DB::getConn()->prepare("INSERT INTO `posts_tags` SET `posts_id`=?, `tags_id`=?");
-						$posts_tags->execute(array($poste['id'],$t));
-					}
-
-				}	
-		
-						header('Location: ../TesteFullStackPleno/editar.php');
-					}
-				}
+	if($inserir->execute(array($titulo,$slug,$body,$img,$published,$autor,$id))){
+						
+//associar a postagem as suas tagas 
+		$select = DB::getConn()->prepare("SELECT `id` FROM `posts` WHERE `title`=? AND `slug`=? AND `body`=? AND `authors_id`=?");
+		$select->execute(array($titulo,$slug,$body,$autor));
+		$delete = DB::getConn()->prepare("DELETE FROM `posts_tags` WHERE `posts_id`=?");
+		$delete->execute(array($id));	
+		while($poste = $select->fetch(PDO::FETCH_ASSOC)){
+			foreach($tag as $t){
+				$posts_tags = DB::getConn()->prepare("INSERT INTO `posts_tags` SET `posts_id`=?, `tags_id`=?");
+				$posts_tags->execute(array($poste['id'],$t));
 			}
+
+		} header('Location: ../TesteFullStackPleno/editar.php');			
+	}                
 			}catch(PDOException $e){
 				
 				logErros($e);
