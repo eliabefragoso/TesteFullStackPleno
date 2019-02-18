@@ -30,7 +30,7 @@
 					$lembrar = isset($_POST['lembrar']) ? $_POST['lembrar'] : '';
 					
 					if($objLogin->logar($_POST['email'],$_POST['senha'],$lembrar)){
-						header('Location: ./');
+						header('Location: ./index.php?logado=1');
 						exit;
 					}else{
 						echo $objLogin->erro;

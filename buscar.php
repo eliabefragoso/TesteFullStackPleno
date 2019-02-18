@@ -15,7 +15,7 @@
     <div class="pure-menu pure-menu-open pure-menu-fixed pure-menu-horizontal">
         <a class="pure-menu-heading" href="index.php">TesteFullStackPleno</a>
         <ul>
-        <li> <form action="buscar.php" method="post" > 
+        <li> <form action="" method="post" > 
             <input id="id_palavra" name="palavra" type="text" size="50"/> 
             
                     <button type="submit" class="pure-button pure-button-primary">Buscar</button>
@@ -55,7 +55,8 @@
     </div>
 
  <?php 
-            $poste = DB::getConn()->prepare("SELECT p.id, p.title, p.slug, p.body, p.image, a.nome FROM posts p INNER JOIN authors a ON p.authors_id=a.id;");
+            $palavra = $_POST['palavra'];
+            $poste = DB::getConn()->prepare("SELECT p.id, p.title, p.slug, p.body, p.image, a.nome FROM posts p INNER JOIN authors a ON p.authors_id=a.id WHERE p.title LIKE '%".$palavra."%' OR p.slug LIKE '%".$palavra."%' OR p.body LIKE '%".$palavra."%';");
              $poste->execute();
              while($p = $poste->fetch(PDO::FETCH_ASSOC)){ 
                            
@@ -90,58 +91,43 @@
         </div>
         <?php }?>
     </div>
-    <?php }?>
+    <?php }?> 
+    <?php 
+         $busca_tag = DB::getConn()->prepare("Select p.id, p.title, p.slug, p.body, p.image, a.nome from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id inner join authors a ON p.authors_id=a.id where t.tag=?;");
+         $busca_tag->execute(array($palavra));
+         while($busca_post = $busca_tag->fetch(PDO::FETCH_ASSOC)){
+              
+         
+    ?>
     <div class="pure-g-r content-ribbon">
         <div class="pure-u-1-3">
             <div class="l-box">
-                <img src="http://placehold.it/400x250"
-                     alt="Fórum de Dúvidas">
+                <img src="<?php echo $busca_post['image']?>"
+                     alt="<?php echo $busca_post['title']?>">
             </div>
         </div>
         <div class="pure-u-2-3">
             <div class="l-box">
-                <h4 class="content-subhead">Fórum de Dúvidas</h4>
-                <h3>Interaja com seus Alunos</h3>
+                <h4 class="content-subhead"><?php echo $busca_post['title']?></h4>
+                <h3><?php echo $busca_post['slug']?></h3>
                 <p>
-                    No Simple MOOC você pode ter seu próprio sistema de fórum para que seus alunos possam interagir com você e com os outros alunos
+                <?php echo $busca_post['body']?>
                 </p>
+                <h5> Autor: <?php echo $busca_post['nome']?> </h5>
+                <h6>Tags: <?php 
+                 $Tags = DB::getConn()->prepare("Select t.id, t.tag from posts p inner join posts_tags pq on p.id = pq.posts_id inner join tags t on t.id=pq.tags_id where p.id=?;");
+                 $Tags->execute(array($busca_post['id']));
+                 while($Tag = $Tags->fetch(PDO::FETCH_ASSOC)){
+                     echo ' <a class="pure-menu-heading" href="tag.php?id='.$Tag['id'].'">'.$Tag['tag'].'</a> / '; 
+                 }
+                 echo '</h6>';
+                ?> 
             </div>
         </div>
-    </div>
-    <div class="pure-g-r content-ribbon">
-        <div class="pure-u-2-3">
-            <div class="l-box">
-                <h4 class="content-subhead">Exercícios</h4>
-                <h3>Crie exercícios para avaliar seus alunos</h3>
-                <p>
-                    Você pode criar exercícios para que os alunos possam ser avaliados e todo o controle de notas e resolução dos exercícios é controlado pela plataforma, facilitando sua vida
-                </p>
-            </div>
-        </div>
-        <div class="pure-u-1-3">
-            <div class="l-box">
-                <img src="http://placehold.it/400x250"
-                     alt="Exercícios">
-            </div>
-        </div>
-    </div>
-    <div class="pure-g-r content-ribbon">
-        <div class="pure-u-1-3">
-            <div class="l-box">
-                <img src="http://placehold.it/400x250"
-                     alt="Mural de Avisos">
-            </div>
-        </div>
-        <div class="pure-u-2-3">
-            <div class="l-box">
-                <h4 class="content-subhead">Mural de Avisos</h4>
-                <h3>Envie anúncios diretamente para os alunos</h3>
-                <p>
-                    Organize os avisos do seu curso de forma fácil e simples.
-                </p>
-            </div>
-        </div>
-    </div>
+    </div> 
+    <?php }?>  
+
+   
     <div class="footer">
     TesteFullStackPleno - Uma simples plataforma de postagem de texto
     </div>
