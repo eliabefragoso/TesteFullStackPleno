@@ -75,7 +75,7 @@
 										$inserir = DB::getConn()->prepare("INSERT INTO `users` SET `email`=?, `password`=?, `nome`=?");
 										
 						if($inserir->execute(array($email,$senhaInsert,$nomecompleto))){
-											header('Location: ./');
+											header('Location: ./editar.php');
 										}
 									}
 								}

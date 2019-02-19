@@ -37,9 +37,6 @@ if(is_null($dados)){
 	extract($dados,EXTR_PREFIX_ALL,'user'); 
 }
 
-function user_img($img){
-	return ($img<>'' AND file_exists('uploads/usuarios/'.$img)) ? $img : 'default.png';
-}
 
 function dd($in, $dump = false)
 {

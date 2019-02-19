@@ -50,9 +50,9 @@
                         Uma Simples Plataforma de Postagem de Textos
                     </h1>
                     <h2 class="splash-subhead">
-                        O TesteFullStackPleno visa simplificar a postagem de textos na internet, provendo ferramentas objetivas e de fácil uso par o compartilhamento de texto.
+                        O TesteFullStackPleno visa simplificar a postagem de textos na internet, provendo ferramentas objetivas e de fácil uso para o compartilhamento de texto.
                     </h2>
-                    <h3> Poste seus textos favoritos aqui e os compartilhe na rede mundial de computadores  </h3>
+                    <h3> Poste seus textos favoritos aqui e os compartilhe na rede mundial de computadores!  </h3>
                     <p>
                         <a href="cadastroPoste.php" class="pure-button primary-button">Postar Texto</a>
                     </p>
